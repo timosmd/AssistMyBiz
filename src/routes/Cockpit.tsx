@@ -12,7 +12,10 @@ export function Cockpit() {
       const previous = await getSetting("lastOpened");
       if (active) setLastOpened(previous);
       await setSetting("lastOpened", new Date().toISOString());
-    })().catch(() => {/* in v1 still: Persistenz ist optional fürs Rendern */});
+    })().catch((err) => {
+      // Persistenz ist fürs Rendern optional, aber Fehler sollen sichtbar sein.
+      console.warn("[Cockpit] Persistenz nicht verfügbar:", err);
+    });
     return () => { active = false; };
   }, []);
 

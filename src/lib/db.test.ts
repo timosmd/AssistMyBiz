@@ -33,6 +33,7 @@ describe("setSetting", () => {
     expect(execute).toHaveBeenCalledTimes(1);
     const [sql, params] = execute.mock.calls[0];
     expect(sql).toMatch(/INSERT INTO settings/i);
+    expect(sql).toMatch(/ON CONFLICT\(key\) DO UPDATE/i);
     expect(params).toEqual(["shopName", "Cafe Sonne"]);
   });
 });
