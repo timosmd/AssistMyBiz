@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 40 33% 98%;        /* warmes Off-White */
+  --foreground: 220 20% 20%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 20% 20%;
+  --primary: 168 60% 40%;         /* freundliches Teal */
+  --primary-foreground: 0 0% 100%;
+  --muted: 40 20% 94%;
+  --muted-foreground: 220 12% 45%;
+  --border: 40 15% 88%;
+}
+
+body {
+  @apply bg-background text-foreground font-sans antialiased;
+}
