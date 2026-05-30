@@ -57,7 +57,7 @@ describe("listReceipts", () => {
       dateiTyp: "jpg",
     });
     const [sql] = select.mock.calls[0];
-    expect(sql).toMatch(/ORDER BY datum DESC/i);
+    expect(sql).toMatch(/ORDER BY r\.datum DESC/i);
   });
 });
 

@@ -1,4 +1,4 @@
-import Database from "@tauri-apps/plugin-sql";
+import { getDb } from "./connection";
 
 export interface NewReceipt {
   datum: string;
@@ -12,12 +12,6 @@ export interface NewReceipt {
 export interface Receipt extends NewReceipt {
   id: number;
   kategorieName: string | null;
-}
-
-let dbPromise: Promise<Database> | null = null;
-function getDb(): Promise<Database> {
-  if (!dbPromise) dbPromise = Database.load("sqlite:assistmybiz.db");
-  return dbPromise;
 }
 
 interface ReceiptRow {
@@ -46,7 +40,7 @@ export async function listReceipts(): Promise<Receipt[]> {
     `SELECT r.id, r.datum, r.betrag_cent, r.kategorie_id, c.name AS kategorie_name,
             r.notiz, r.datei_pfad, r.datei_typ
        FROM receipts r LEFT JOIN categories c ON c.id = r.kategorie_id
-      ORDER BY datum DESC, r.id DESC`,
+      ORDER BY r.datum DESC, r.id DESC`,
   );
   return rows.map((r) => ({
     id: r.id,

@@ -1,13 +1,4 @@
-import Database from "@tauri-apps/plugin-sql";
-
-let dbPromise: Promise<Database> | null = null;
-
-function getDb(): Promise<Database> {
-  if (!dbPromise) {
-    dbPromise = Database.load("sqlite:assistmybiz.db");
-  }
-  return dbPromise;
-}
+import { getDb } from "./db/connection";
 
 export async function setSetting(key: string, value: string): Promise<void> {
   const db = await getDb();

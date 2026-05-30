@@ -16,6 +16,11 @@ pub fn relative_dest(year: &str, uuid: &str, kind: &str) -> String {
     format!("{year}/{uuid}.{kind}")
 }
 
+/// Genau vier ASCII-Ziffern — verhindert Pfad-Traversal über den Jahr-Parameter.
+pub fn is_valid_year(year: &str) -> bool {
+    year.len() == 4 && year.chars().all(|c| c.is_ascii_digit())
+}
+
 #[derive(serde::Serialize)]
 pub struct ImportedFile {
     pub relative_path: String,
@@ -25,6 +30,9 @@ pub struct ImportedFile {
 #[tauri::command]
 pub fn import_receipt_file(app: tauri::AppHandle, src_path: String, year: String) -> Result<ImportedFile, String> {
     let kind = file_kind(&src_path).ok_or_else(|| "Nicht unterstützter Dateityp".to_string())?;
+    if !is_valid_year(&year) {
+        return Err("Ungültiges Jahr".to_string());
+    }
     let uuid = uuid::Uuid::new_v4().to_string();
     let rel = relative_dest(&year, &uuid, kind);
     let base: PathBuf = app.path().app_data_dir().map_err(|e| e.to_string())?.join("receipts");
@@ -57,5 +65,13 @@ mod tests {
     #[test]
     fn relative_dest_builds_year_uuid_kind() {
         assert_eq!(relative_dest("2026", "abc", "jpg"), "2026/abc.jpg");
+    }
+    #[test]
+    fn is_valid_year_rejects_traversal_and_junk() {
+        assert!(is_valid_year("2026"));
+        assert!(!is_valid_year("../.."));
+        assert!(!is_valid_year("26"));
+        assert!(!is_valid_year("20266"));
+        assert!(!is_valid_year("20a6"));
     }
 }

@@ -1,16 +1,10 @@
-import Database from "@tauri-apps/plugin-sql";
+import { getDb } from "./connection";
 
 export interface Category {
   id: number;
   name: string;
   isDefault: boolean;
   sortOrder: number;
-}
-
-let dbPromise: Promise<Database> | null = null;
-function getDb(): Promise<Database> {
-  if (!dbPromise) dbPromise = Database.load("sqlite:assistmybiz.db");
-  return dbPromise;
 }
 
 interface CategoryRow {
