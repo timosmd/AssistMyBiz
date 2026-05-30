@@ -1,3 +1,9 @@
+import { vi } from "vitest";
+vi.mock("@/lib/db", () => ({
+  getSetting: vi.fn(async () => null),
+  setSetting: vi.fn(async () => {}),
+}));
+
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
