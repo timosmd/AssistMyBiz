@@ -51,27 +51,28 @@ export function DailyCloseView() {
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">Datum</span>
           <input aria-label="Datum" type="date" value={datum}
-            onChange={(e) => { setDatum(e.target.value); setGespeichert(false); }}
+            onChange={(e) => { setDatum(e.target.value); setGezaehltCent(0); setGespeichert(false); }}
             className="rounded-xl border border-border px-3 py-2" />
         </label>
       </div>
 
-      <CashCounter onTotal={setGezaehltCent} />
+      {/* key={datum} remountet den Zähler bei Datumswechsel (frische Stückelung). */}
+      <CashCounter key={datum} onTotal={(c) => { setGezaehltCent(c); setGespeichert(false); }} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">Soll (€)</span>
-          <input aria-label="Soll" value={soll} onChange={(e) => setSoll(e.target.value)}
+          <input aria-label="Soll" value={soll} onChange={(e) => { setSoll(e.target.value); setGespeichert(false); }}
             inputMode="decimal" placeholder="0,00" className="rounded-xl border border-border px-3 py-2" />
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">Tagesumsatz (€)</span>
-          <input aria-label="Tagesumsatz" value={umsatz} onChange={(e) => setUmsatz(e.target.value)}
+          <input aria-label="Tagesumsatz" value={umsatz} onChange={(e) => { setUmsatz(e.target.value); setGespeichert(false); }}
             inputMode="decimal" placeholder="0,00" className="rounded-xl border border-border px-3 py-2" />
         </label>
         <label className="flex flex-col gap-1 sm:col-span-2">
           <span className="text-sm font-medium">Notiz</span>
-          <input aria-label="Notiz" value={notiz} onChange={(e) => setNotiz(e.target.value)}
+          <input aria-label="Notiz" value={notiz} onChange={(e) => { setNotiz(e.target.value); setGespeichert(false); }}
             className="rounded-xl border border-border px-3 py-2" />
         </label>
       </div>
