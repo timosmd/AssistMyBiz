@@ -50,3 +50,6 @@ backups/
 
 # Claude Code (personal local overrides)
 .claude/settings.local.json
+
+# Local bug reports (dev tool output)
+bug-reports/
