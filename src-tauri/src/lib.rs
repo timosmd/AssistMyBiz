@@ -48,6 +48,22 @@ pub fn run() {
             ",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "create_daily_close",
+            sql: "
+                CREATE TABLE daily_close (
+                  id INTEGER PRIMARY KEY,
+                  datum TEXT NOT NULL UNIQUE,
+                  gezaehlt_cent INTEGER,
+                  soll_cent INTEGER,
+                  umsatz_cent INTEGER,
+                  notiz TEXT,
+                  erstellt_am TEXT NOT NULL
+                );
+            ",
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
