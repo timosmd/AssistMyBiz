@@ -303,7 +303,9 @@ describe("CashCounter", () => {
     // 2 × 5,00 € = 10,00 € (Stückelung 500 ct)
     await userEvent.type(screen.getByLabelText(/anzahl 5,00 €/i), "2");
     expect(onTotal).toHaveBeenLastCalledWith(1000);
-    expect(screen.getByText(/10,00 €/)).toBeInTheDocument();
+    // Summe gezielt prüfen (nicht das gleichnamige 10-€-Stückelungslabel).
+    const totalRow = screen.getByText(/gezählt \(ist\)/i).closest("div");
+    expect(totalRow).toHaveTextContent(/10,00 €/);
   });
 });
 ```
