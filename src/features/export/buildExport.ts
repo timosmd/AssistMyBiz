@@ -21,10 +21,11 @@ export function exportFileName(r: Receipt): string {
 /** index.csv: ; als Trennzeichen, Dezimalkomma. */
 export function buildIndexCsv(receipts: Receipt[]): string {
   const header = "Datum;Kategorie;Betrag;Notiz;Dateiname";
+  const csvCell = (text: string) => text.replace(/[;\r\n]/g, " ");
   const rows = receipts.map((r) => {
-    const kategorie = r.kategorieName ?? "Ohne Kategorie";
+    const kategorie = csvCell(r.kategorieName ?? "Ohne Kategorie");
     const betrag = centsToEuroString(r.betragCent);
-    const notiz = (r.notiz ?? "").replace(/[;\n]/g, " ");
+    const notiz = csvCell(r.notiz ?? "");
     const datei = r.dateiPfad ? exportFileName(r) : "";
     return `${r.datum};${kategorie};${betrag};${notiz};${datei}`;
   });

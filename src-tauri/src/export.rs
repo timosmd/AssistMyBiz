@@ -6,6 +6,12 @@ pub fn is_safe_dest_name(name: &str) -> bool {
     !name.is_empty() && !name.contains('/') && !name.contains('\\') && !name.contains("..")
 }
 
+/// Sicherer relativer Quellpfad innerhalb von receipts/ (z. B. "2026/uuid.jpg"):
+/// einfacher Schrägstrich erlaubt, aber kein "..", kein Backslash, nicht absolut.
+pub fn is_safe_relative(rel: &str) -> bool {
+    !rel.is_empty() && !rel.contains("..") && !rel.contains('\\') && !rel.starts_with('/')
+}
+
 #[derive(serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExportFile {
@@ -30,6 +36,9 @@ pub fn export_bookkeeping(
         if !is_safe_dest_name(&f.dest_name) {
             return Err(format!("Ungültiger Zielname: {}", f.dest_name));
         }
+        if !is_safe_relative(&f.src_relative) {
+            return Err(format!("Unzulässiger Quellpfad: {}", f.src_relative));
+        }
         let src = receipts_base.join(&f.src_relative);
         if src.exists() {
             std::fs::copy(&src, target.join(&f.dest_name)).map_err(|e| e.to_string())?;
@@ -53,5 +62,13 @@ mod tests {
         assert!(!is_safe_dest_name("../x.jpg"));
         assert!(!is_safe_dest_name("a/b.jpg"));
         assert!(!is_safe_dest_name(""));
+    }
+    #[test]
+    fn safe_relative_allows_one_slash_but_blocks_traversal() {
+        assert!(is_safe_relative("2026/abc.jpg"));
+        assert!(!is_safe_relative("../../etc/passwd"));
+        assert!(!is_safe_relative("2026\\..\\x.jpg"));
+        assert!(!is_safe_relative("/etc/passwd"));
+        assert!(!is_safe_relative(""));
     }
 }
