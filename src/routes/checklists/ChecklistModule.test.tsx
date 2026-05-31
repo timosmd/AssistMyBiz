@@ -9,6 +9,13 @@ vi.mock("@/lib/db/templates", () => ({
   updateTemplate: vi.fn(async () => {}),
   deleteTemplate: vi.fn(async () => {}),
 }));
+vi.mock("@/lib/db/runs", () => ({
+  getRun: vi.fn(async () => null),
+  getOrCreateRun: vi.fn(),
+  updateItemStates: vi.fn(),
+  completeRun: vi.fn(),
+  listRuns: vi.fn(async () => []),
+}));
 
 import { ChecklistModule } from "./ChecklistModule";
 
@@ -21,8 +28,14 @@ describe("ChecklistModule", () => {
     expect(await screen.findByText(/noch keine vorlagen/i)).toBeInTheDocument();
   });
 
-  it("shows the Heute placeholder by default", () => {
+  it("shows the Heute tab content by default", async () => {
     render(<MemoryRouter><ChecklistModule /></MemoryRouter>);
-    expect(screen.getByText(/bald verfügbar/i)).toBeInTheDocument();
+    expect(await screen.findByText(/lege im tab/i)).toBeInTheDocument();
+  });
+
+  it("switches to the Historie tab", async () => {
+    render(<MemoryRouter><ChecklistModule /></MemoryRouter>);
+    await userEvent.click(screen.getByRole("tab", { name: /historie/i }));
+    expect(await screen.findByText(/noch keine durchführungen/i)).toBeInTheDocument();
   });
 });

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { BackLink } from "@/components/BackLink";
 import { VorlagenView } from "@/features/checklists/VorlagenView";
+import { HeuteView } from "@/features/checklists/HeuteView";
+import { HistorieView } from "@/features/checklists/HistorieView";
 
 type Tab = "heute" | "vorlagen" | "historie";
 
@@ -29,9 +31,9 @@ export function ChecklistModule() {
         ))}
       </div>
 
-      {tab === "heute" && <p className="text-muted-foreground">Heute — bald verfügbar.</p>}
+      {tab === "heute" && <HeuteView />}
       {tab === "vorlagen" && <VorlagenView />}
-      {tab === "historie" && <p className="text-muted-foreground">Historie — bald verfügbar.</p>}
+      {tab === "historie" && <HistorieView />}
     </main>
   );
 }
