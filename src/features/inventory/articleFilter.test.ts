@@ -14,6 +14,9 @@ describe("isLowStock", () => {
     expect(isLowStock({ ...base, bestand: 3 })).toBe(true);
     expect(isLowStock({ ...base, bestand: 1 })).toBe(true);
   });
+  it("is false when no mindestbestand is set (0/0 is not low)", () => {
+    expect(isLowStock({ ...base, bestand: 0, mindestbestand: 0 })).toBe(false);
+  });
 });
 
 describe("filterArticles", () => {

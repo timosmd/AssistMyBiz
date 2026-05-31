@@ -9,7 +9,12 @@ export function ArticleList({ reloadKey }: { reloadKey: number }) {
   const [fehler, setFehler] = useState<string | null>(null);
 
   async function reload() {
-    setArticles(await listArticles());
+    try {
+      setArticles(await listArticles());
+      setFehler(null);
+    } catch {
+      setFehler("Artikel konnten nicht geladen werden.");
+    }
   }
   useEffect(() => { reload(); }, [reloadKey]);
 

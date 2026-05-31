@@ -47,7 +47,7 @@ export async function addArticle(a: NewArticle): Promise<void> {
 
 export async function setBestand(id: number, bestand: number): Promise<void> {
   const db = await getDb();
-  await db.execute("UPDATE articles SET bestand = $2 WHERE id = $1", [id, bestand]);
+  await db.execute("UPDATE articles SET bestand = $1 WHERE id = $2", [bestand, id]);
 }
 
 export async function deleteArticle(id: number): Promise<void> {

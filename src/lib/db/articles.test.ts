@@ -40,8 +40,8 @@ describe("setBestand", () => {
     execute.mockResolvedValue(undefined);
     await setBestand(7, 9);
     const [sql, params] = execute.mock.calls[0];
-    expect(sql).toMatch(/UPDATE articles SET bestand = \$2 WHERE id = \$1/i);
-    expect(params).toEqual([7, 9]);
+    expect(sql).toMatch(/UPDATE articles SET bestand = \$1 WHERE id = \$2/i);
+    expect(params).toEqual([9, 7]);
   });
 });
 
