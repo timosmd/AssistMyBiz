@@ -7,6 +7,10 @@ vi.mock("@/lib/db/receipts", () => ({
   deleteReceipt: vi.fn(async () => {}),
 }));
 vi.mock("@/lib/db/categories", () => ({ listCategories: vi.fn(async () => []) }));
+vi.mock("@/lib/db/dailyClose", () => ({
+  getDailyClose: vi.fn(async () => null),
+  saveDailyClose: vi.fn(async () => {}),
+}));
 
 import { TillModule } from "./TillModule";
 
@@ -19,9 +23,10 @@ describe("TillModule", () => {
     expect(await screen.findByText(/noch keine belege/i)).toBeInTheDocument();
   });
 
-  it("switches to the Tageskasse tab placeholder", async () => {
+  it("switches to the Tageskasse tab and shows the cash counter", async () => {
     render(<TillModule />);
     await userEvent.click(screen.getByRole("tab", { name: /tageskasse/i }));
-    expect(screen.getByText(/bald verfügbar/i)).toBeInTheDocument();
+    expect(await screen.findByText(/gezählt \(ist\)/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /tagesabschluss speichern/i })).toBeInTheDocument();
   });
 });
