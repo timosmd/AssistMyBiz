@@ -38,4 +38,22 @@ describe("BugReportModal", () => {
     expect(arg.route).toBe("/till");
     expect(arg.prio).toBe("Mittel");
   });
+
+  it("shows a confirmation after a successful send", async () => {
+    reportSink.mockResolvedValue(undefined);
+    renderModal();
+    await userEvent.type(screen.getByLabelText(/beschreibung/i), "Test");
+    await userEvent.click(screen.getByRole("button", { name: /senden/i }));
+    expect(await screen.findByText(/report wurde gespeichert/i)).toBeInTheDocument();
+  });
+
+  it("shows an error when the sink rejects", async () => {
+    reportSink.mockImplementationOnce(async () => {
+      throw new Error("write failed");
+    });
+    renderModal();
+    await userEvent.type(screen.getByLabelText(/beschreibung/i), "Test");
+    await userEvent.click(screen.getByRole("button", { name: /senden/i }));
+    expect(await screen.findByText(/konnte den report nicht speichern/i)).toBeInTheDocument();
+  });
 });
