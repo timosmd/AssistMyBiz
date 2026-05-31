@@ -76,12 +76,15 @@ pub fn run() {
                 .add_migrations("sqlite:assistmybiz.db", migrations)
                 .build(),
         )
+        .manage(scanner::ScanState::default())
         .invoke_handler(tauri::generate_handler![
             greet,
             receipts::import_receipt_file,
             receipts::read_receipt_file,
             bugreport::write_bug_report,
-            export::export_bookkeeping
+            export::export_bookkeeping,
+            scanner::start_scan_session,
+            scanner::stop_scan_session
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
