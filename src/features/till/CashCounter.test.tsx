@@ -14,4 +14,14 @@ describe("CashCounter", () => {
     const totalRow = screen.getByText(/gezählt \(ist\)/i).closest("div");
     expect(totalRow).toHaveTextContent(/10,00 €/);
   });
+
+  it("leaves the input empty (not 0) when cleared", async () => {
+    const onTotal = vi.fn();
+    render(<CashCounter onTotal={onTotal} />);
+    const input = screen.getByLabelText(/anzahl 5,00 €/i) as HTMLInputElement;
+    await userEvent.type(input, "2");
+    await userEvent.clear(input);
+    expect(input.value).toBe("");
+    expect(onTotal).toHaveBeenLastCalledWith(0);
+  });
 });

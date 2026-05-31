@@ -6,8 +6,9 @@ export function CashCounter({ onTotal }: { onTotal: (cents: number) => void }) {
   const [counts, setCounts] = useState<Record<number, number>>({});
 
   function setCount(denom: number, raw: string) {
-    const n = raw === "" ? 0 : Number(raw);
-    const next = { ...counts, [denom]: n };
+    const next = { ...counts };
+    if (raw === "") delete next[denom];
+    else next[denom] = Number(raw);
     setCounts(next);
     onTotal(totalFromCounts(next));
   }
