@@ -31,8 +31,13 @@ export function ReceiptForm({ onSaved }: { onSaved: () => void }) {
     });
     if (typeof path !== "string") return;
     const year = datum.slice(0, 4);
-    const imported = await invoke<ImportedFile>("import_receipt_file", { srcPath: path, year });
-    setDatei(imported);
+    try {
+      const imported = await invoke<ImportedFile>("import_receipt_file", { srcPath: path, year });
+      setDatei(imported);
+      setFehler(null);
+    } catch {
+      setFehler("Datei konnte nicht übernommen werden. Bitte erneut versuchen.");
+    }
   }
 
   async function save() {
@@ -42,14 +47,19 @@ export function ReceiptForm({ onSaved }: { onSaved: () => void }) {
       return;
     }
     setFehler(null);
-    await addReceipt({
-      datum,
-      betragCent: cents,
-      kategorieId,
-      notiz: notiz.trim() || null,
-      dateiPfad: datei?.relative_path ?? null,
-      dateiTyp: datei?.file_kind ?? null,
-    });
+    try {
+      await addReceipt({
+        datum,
+        betragCent: cents,
+        kategorieId,
+        notiz: notiz.trim() || null,
+        dateiPfad: datei?.relative_path ?? null,
+        dateiTyp: datei?.file_kind ?? null,
+      });
+    } catch {
+      setFehler("Speichern fehlgeschlagen. Bitte erneut versuchen.");
+      return;
+    }
     onSaved();
     setBetrag(""); setNotiz(""); setDatei(null);
   }

@@ -19,6 +19,7 @@ vi.mock("@/lib/db/categories", () => ({
 }));
 
 import { ReceiptList } from "./ReceiptList";
+import { deleteReceipt } from "@/lib/db/receipts";
 
 describe("ReceiptList", () => {
   it("renders all receipts and filters by search text", async () => {
@@ -28,5 +29,12 @@ describe("ReceiptList", () => {
     await userEvent.type(screen.getByLabelText(/suchen/i), "bäcker");
     expect(screen.getByText("Bäcker")).toBeInTheDocument();
     expect(screen.queryByText("Mai")).not.toBeInTheDocument();
+  });
+
+  it("deletes a receipt via its delete button", async () => {
+    render(<ReceiptList reloadKey={0} />);
+    await screen.findByText("Bäcker");
+    await userEvent.click(screen.getByRole("button", { name: /Beleg 1 löschen/i }));
+    expect(vi.mocked(deleteReceipt)).toHaveBeenCalledWith(1);
   });
 });

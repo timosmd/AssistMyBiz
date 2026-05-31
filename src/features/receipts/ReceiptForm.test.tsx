@@ -28,5 +28,18 @@ describe("ReceiptForm", () => {
     await userEvent.click(screen.getByRole("button", { name: /speichern/i }));
     expect(addReceipt).toHaveBeenCalledTimes(1);
     expect(addReceipt.mock.calls[0][0].betragCent).toBe(1234);
+    expect(onSaved).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows an error and does not signal saved when addReceipt rejects", async () => {
+    addReceipt.mockImplementationOnce(async () => {
+      throw new Error("db locked");
+    });
+    const onSaved = vi.fn();
+    render(<ReceiptForm onSaved={onSaved} />);
+    await userEvent.type(await screen.findByLabelText(/betrag/i), "5");
+    await userEvent.click(screen.getByRole("button", { name: /speichern/i }));
+    expect(await screen.findByText(/speichern fehlgeschlagen/i)).toBeInTheDocument();
+    expect(onSaved).not.toHaveBeenCalled();
   });
 });

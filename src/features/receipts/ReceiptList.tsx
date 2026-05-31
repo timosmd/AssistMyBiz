@@ -9,6 +9,7 @@ export function ReceiptList({ reloadKey }: { reloadKey: number }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [query, setQuery] = useState("");
   const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [fehler, setFehler] = useState<string | null>(null);
 
   async function reload() {
     setReceipts(await listReceipts());
@@ -17,8 +18,13 @@ export function ReceiptList({ reloadKey }: { reloadKey: number }) {
   useEffect(() => { listCategories().then(setCategories); }, []);
 
   async function remove(id: number) {
-    await deleteReceipt(id);
-    await reload();
+    try {
+      await deleteReceipt(id);
+      setFehler(null);
+      await reload();
+    } catch {
+      setFehler("Löschen fehlgeschlagen. Bitte erneut versuchen.");
+    }
   }
 
   const shown = filterReceipts(receipts, query, categoryId);
@@ -36,6 +42,7 @@ export function ReceiptList({ reloadKey }: { reloadKey: number }) {
           {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
       </div>
+      {fehler && <p className="text-sm text-red-600">{fehler}</p>}
       {shown.length === 0 ? (
         <p className="text-muted-foreground">Noch keine Belege.</p>
       ) : (
