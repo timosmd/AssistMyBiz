@@ -18,7 +18,11 @@ export function ScanPanel({ onScanned }: { onScanned: (f: { relative_path: strin
       setInfo(null);
       setQr(null);
     }).then((u) => { un = u; });
-    return () => { if (un) un(); };
+    return () => {
+      if (un) un();
+      // Beim Verlassen die Session beenden, damit kein Server weiterläuft.
+      invoke("stop_scan_session").catch(() => {});
+    };
   }, [onScanned]);
 
   async function start() {
