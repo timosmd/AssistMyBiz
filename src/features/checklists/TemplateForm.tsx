@@ -80,6 +80,7 @@ export function TemplateForm({ initial, onSaved, onCancel }: {
         ))}
         <div className="flex items-center gap-2">
           <input aria-label="Neuer Punkt" value={neu} onChange={(e) => setNeu(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addItem(); } }}
             placeholder="Neuen Punkt eingeben…" className="flex-1 rounded-lg border border-border px-2 py-1" />
           <button type="button" onClick={addItem}
             className="rounded-lg border border-border px-3 py-1 text-sm">Punkt hinzufügen</button>

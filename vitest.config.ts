@@ -13,5 +13,9 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
+    // Großzügiger als der 5s-Default: die jsdom-Umgebung ist auf langsamen/
+    // ausgelasteten Windows-Maschinen zäh, sonst gibt es sporadische Timeouts.
+    testTimeout: 15000,
+    hookTimeout: 15000,
   },
 });

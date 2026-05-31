@@ -30,8 +30,18 @@ export async function listTemplates(): Promise<ChecklistTemplate[]> {
     id: r.id,
     name: r.name,
     frequenz: r.frequenz === "woechentlich" ? "woechentlich" : "taeglich",
-    items: JSON.parse(r.items_json) as ChecklistItem[],
+    items: safeParseItems(r.items_json),
   }));
+}
+
+/** Tolerant gegenüber kaputtem JSON (verliert dann nicht die ganze Liste). */
+function safeParseItems(json: string): ChecklistItem[] {
+  try {
+    const v = JSON.parse(json);
+    return Array.isArray(v) ? (v as ChecklistItem[]) : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function addTemplate(name: string, frequenz: Frequenz, items: ChecklistItem[]): Promise<void> {
