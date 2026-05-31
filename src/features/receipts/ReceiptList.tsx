@@ -29,6 +29,7 @@ export function ReceiptList({ reloadKey }: { reloadKey: number }) {
   }
 
   async function openFile(r: Receipt) {
+    if (!r.dateiPfad) return; // Button ist nur bei vorhandener Datei sichtbar.
     try {
       await invoke("open_receipt_file", { relativePath: r.dateiPfad });
       setFehler(null);

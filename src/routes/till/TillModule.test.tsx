@@ -12,6 +12,7 @@ vi.mock("@/lib/db/dailyClose", () => ({
   getDailyClose: vi.fn(async () => null),
   saveDailyClose: vi.fn(async () => {}),
   listDailyCloses: vi.fn(async () => []),
+  deleteDailyClose: vi.fn(async () => {}),
 }));
 vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn(() => Promise.resolve()) }));
 vi.mock("@tauri-apps/api/event", () => ({ listen: vi.fn(async () => () => {}) }));
