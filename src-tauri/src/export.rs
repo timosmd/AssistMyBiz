@@ -53,6 +53,16 @@ pub fn export_bookkeeping(
     Ok(copied)
 }
 
+/// Schreibt die Nachbestell-Liste als `nachbestellung.txt` in den gewählten Ordner.
+/// Fester Dateiname → keine Pfad-Injektion möglich.
+#[tauri::command]
+pub fn export_reorder(target_dir: String, content: String) -> Result<(), String> {
+    let target = PathBuf::from(&target_dir);
+    std::fs::create_dir_all(&target).map_err(|e| e.to_string())?;
+    std::fs::write(target.join("nachbestellung.txt"), content).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

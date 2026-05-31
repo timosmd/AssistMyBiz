@@ -136,6 +136,7 @@ pub fn run() {
             receipts::open_receipt_file,
             bugreport::write_bug_report,
             export::export_bookkeeping,
+            export::export_reorder,
             scanner::start_scan_session,
             scanner::stop_scan_session
         ])

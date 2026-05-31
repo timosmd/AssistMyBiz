@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BackLink } from "@/components/BackLink";
 import { ArticleForm } from "@/features/inventory/ArticleForm";
 import { ArticleList } from "@/features/inventory/ArticleList";
+import { BestellView } from "@/features/inventory/BestellView";
 
 type Tab = "artikel" | "bestellung";
 
@@ -36,7 +37,7 @@ export function InventoryModule() {
           <ArticleList reloadKey={reloadKey} />
         </div>
       )}
-      {tab === "bestellung" && <p className="text-muted-foreground">Bestellung — bald verfügbar.</p>}
+      {tab === "bestellung" && <BestellView />}
     </main>
   );
 }

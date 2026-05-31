@@ -21,9 +21,9 @@ describe("InventoryModule", () => {
     expect(await screen.findByText(/noch keine artikel/i)).toBeInTheDocument();
   });
 
-  it("switches to the Bestellung placeholder tab", async () => {
+  it("switches to the Bestellung tab (empty state with no low stock)", async () => {
     render(<MemoryRouter><InventoryModule /></MemoryRouter>);
     await userEvent.click(screen.getByRole("tab", { name: /bestellung/i }));
-    expect(screen.getByText(/bald verfügbar/i)).toBeInTheDocument();
+    expect(await screen.findByText(/ausreichend bestückt/i)).toBeInTheDocument();
   });
 });
