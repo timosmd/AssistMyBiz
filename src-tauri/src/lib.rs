@@ -4,6 +4,7 @@ use tauri_plugin_sql::{Migration, MigrationKind};
 mod bugreport;
 mod export;
 mod receipts;
+mod scanner;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
