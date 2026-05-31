@@ -70,9 +70,10 @@ describe("ring buffer", () => {
 
 describe("installConsoleCapture", () => {
   it("captures console.error into the buffer and is idempotent", () => {
-    installConsoleCapture();
-    installConsoleCapture();
+    // Spy BEFORE install so the capture wrapper forwards to the (silent) spy.
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    installConsoleCapture();
+    installConsoleCapture(); // idempotent
     console.error("boom", 42);
     spy.mockRestore();
     expect(getLog().some((l) => l.includes("boom") && l.includes("42"))).toBe(true);

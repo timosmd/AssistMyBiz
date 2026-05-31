@@ -25,25 +25,14 @@ let patched = false;
 export function installConsoleCapture(): void {
   if (patched) return;
   patched = true;
-  const target = console as Console & Record<string, unknown>;
-  const proxyHandler: ProxyHandler<typeof target> = {
-    get(obj, prop: string | symbol) {
-      const val = Reflect.get(obj, prop);
-      if (prop === "error") {
-        return (...args: unknown[]) => {
-          pushLog(`ERROR ${args.map(String).join(" ")}`);
-          if (typeof val === "function") (val as (...a: unknown[]) => void).apply(obj, args);
-        };
-      }
-      if (prop === "warn") {
-        return (...args: unknown[]) => {
-          pushLog(`WARN ${args.map(String).join(" ")}`);
-          if (typeof val === "function") (val as (...a: unknown[]) => void).apply(obj, args);
-        };
-      }
-      if (typeof val === "function") return val.bind(obj);
-      return val;
-    },
+  const origError = console.error.bind(console);
+  const origWarn = console.warn.bind(console);
+  console.error = (...args: unknown[]) => {
+    pushLog(`ERROR ${args.map(String).join(" ")}`);
+    origError(...args);
   };
-  globalThis.console = new Proxy(target, proxyHandler);
+  console.warn = (...args: unknown[]) => {
+    pushLog(`WARN ${args.map(String).join(" ")}`);
+    origWarn(...args);
+  };
 }
