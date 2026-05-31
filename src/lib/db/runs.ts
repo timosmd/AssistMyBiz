@@ -27,13 +27,21 @@ interface RunRow {
   abgeschlossen_am: string | null;
 }
 
+function safeParse<T>(json: string, fallback: T): T {
+  try {
+    return JSON.parse(json) as T;
+  } catch {
+    return fallback;
+  }
+}
+
 function mapRow(r: RunRow): ChecklistRun {
   return {
     id: r.id,
     templateId: r.template_id,
     periode: r.periode,
-    snapshot: JSON.parse(r.snapshot_json) as RunSnapshot,
-    itemStates: JSON.parse(r.item_states_json) as Record<string, boolean>,
+    snapshot: safeParse<RunSnapshot>(r.snapshot_json, { name: "", frequenz: "taeglich", items: [] }),
+    itemStates: safeParse<Record<string, boolean>>(r.item_states_json, {}),
     notiz: r.notiz,
     abgeschlossenAm: r.abgeschlossen_am,
   };
@@ -54,7 +62,7 @@ export async function getOrCreateRun(template: ChecklistTemplate, periode: strin
   const db = await getDb();
   const snapshot: RunSnapshot = { name: template.name, frequenz: template.frequenz, items: template.items };
   await db.execute(
-    "INSERT INTO checklist_runs (template_id, periode, snapshot_json, item_states_json, erstellt_am) VALUES ($1, $2, $3, '{}', $4)",
+    "INSERT OR IGNORE INTO checklist_runs (template_id, periode, snapshot_json, item_states_json, erstellt_am) VALUES ($1, $2, $3, '{}', $4)",
     [template.id, periode, JSON.stringify(snapshot), new Date().toISOString()],
   );
   const created = await getRun(template.id, periode);

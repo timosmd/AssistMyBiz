@@ -40,7 +40,7 @@ describe("getOrCreateRun", () => {
     const run = await getOrCreateRun(tmpl, "2026-05-31");
     expect(run.id).toBe(5);
     const [sql, params] = execute.mock.calls[0];
-    expect(sql).toMatch(/INSERT INTO checklist_runs/i);
+    expect(sql).toMatch(/INSERT OR IGNORE INTO checklist_runs/i);
     expect(params[0]).toBe(1);
     expect(params[1]).toBe("2026-05-31");
     expect(params[2]).toBe('{"name":"Öffnen","frequenz":"taeglich","items":[{"id":"o1","label":"Kasse"}]}');

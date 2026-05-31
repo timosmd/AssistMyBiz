@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChecklistTemplate } from "@/lib/db/templates";
 import { getRun, getOrCreateRun, updateItemStates, completeRun, type ChecklistRun } from "@/lib/db/runs";
 import { currentPeriod, runProgress } from "./period";
@@ -7,6 +7,10 @@ export function HeuteRunCard({ template }: { template: ChecklistTemplate }) {
   const periode = currentPeriod(template.frequenz, new Date());
   const [run, setRun] = useState<ChecklistRun | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
+  // Immer der aktuellste Run-Stand — verhindert Stale-Closure-Verluste bei
+  // schnell aufeinanderfolgendem Abhaken (setRun ist asynchron).
+  const runRef = useRef<ChecklistRun | null>(run);
+  runRef.current = run;
 
   useEffect(() => {
     let active = true;
@@ -20,10 +24,12 @@ export function HeuteRunCard({ template }: { template: ChecklistTemplate }) {
 
   async function toggle(itemId: string, checked: boolean) {
     try {
-      const r = run ?? (await getOrCreateRun(template, periode));
-      const next = { ...r.itemStates, [itemId]: checked };
-      await updateItemStates(r.id, next);
-      setRun({ ...r, itemStates: next });
+      const base = runRef.current ?? (await getOrCreateRun(template, periode));
+      const next = { ...base.itemStates, [itemId]: checked };
+      const updated = { ...base, itemStates: next };
+      runRef.current = updated; // sofort, damit ein direkt folgendes Abhaken den neuen Stand sieht
+      setRun(updated);
+      await updateItemStates(updated.id, next);
       setFehler(null);
     } catch {
       setFehler("Konnte nicht gespeichert werden.");
@@ -32,9 +38,11 @@ export function HeuteRunCard({ template }: { template: ChecklistTemplate }) {
 
   async function abschliessen() {
     try {
-      const r = run ?? (await getOrCreateRun(template, periode));
-      await completeRun(r.id);
-      setRun({ ...r, abgeschlossenAm: new Date().toISOString() });
+      const base = runRef.current ?? (await getOrCreateRun(template, periode));
+      await completeRun(base.id);
+      const updated = { ...base, abgeschlossenAm: new Date().toISOString() };
+      runRef.current = updated;
+      setRun(updated);
     } catch {
       setFehler("Abschließen fehlgeschlagen.");
     }
