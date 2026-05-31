@@ -2,6 +2,7 @@
 use tauri_plugin_sql::{Migration, MigrationKind};
 
 mod bugreport;
+mod export;
 mod receipts;
 
 #[tauri::command]
@@ -78,7 +79,8 @@ pub fn run() {
             greet,
             receipts::import_receipt_file,
             receipts::read_receipt_file,
-            bugreport::write_bug_report
+            bugreport::write_bug_report,
+            export::export_bookkeeping
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
