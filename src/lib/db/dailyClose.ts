@@ -33,6 +33,20 @@ export async function getDailyClose(datum: string): Promise<DailyClose | null> {
   };
 }
 
+export async function listDailyCloses(): Promise<DailyClose[]> {
+  const db = await getDb();
+  const rows = await db.select<DailyCloseRow[]>(
+    "SELECT datum, gezaehlt_cent, soll_cent, umsatz_cent, notiz FROM daily_close ORDER BY datum",
+  );
+  return rows.map((r) => ({
+    datum: r.datum,
+    gezaehltCent: r.gezaehlt_cent,
+    sollCent: r.soll_cent,
+    umsatzCent: r.umsatz_cent,
+    notiz: r.notiz,
+  }));
+}
+
 export async function saveDailyClose(c: DailyClose): Promise<void> {
   const db = await getDb();
   await db.execute(

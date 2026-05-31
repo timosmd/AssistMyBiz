@@ -40,3 +40,19 @@ describe("saveDailyClose", () => {
     expect(params.slice(0, 5)).toEqual(["2026-05-31", 1000, 1230, 5000, "ok"]);
   });
 });
+
+describe("listDailyCloses", () => {
+  it("maps all rows ordered by datum", async () => {
+    select.mockResolvedValue([
+      { datum: "2026-05-30", gezaehlt_cent: 100, soll_cent: 100, umsatz_cent: 4000, notiz: null },
+      { datum: "2026-05-31", gezaehlt_cent: 200, soll_cent: 200, umsatz_cent: 5000, notiz: "x" },
+    ]);
+    const { listDailyCloses } = await import("./dailyClose");
+    const list = await listDailyCloses();
+    expect(list).toHaveLength(2);
+    expect(list[0].datum).toBe("2026-05-30");
+    expect(list[1].umsatzCent).toBe(5000);
+    const [sql] = select.mock.calls[0];
+    expect(sql).toMatch(/ORDER BY datum/i);
+  });
+});
