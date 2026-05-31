@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 
 vi.mock("@/lib/db/receipts", () => ({
   listReceipts: vi.fn(async () => []),
@@ -25,7 +26,7 @@ import { TillModule } from "./TillModule";
 
 describe("TillModule", () => {
   it("shows three tabs and the Belege tab by default", async () => {
-    render(<TillModule />);
+    render(<MemoryRouter><TillModule /></MemoryRouter>);
     expect(screen.getByRole("tab", { name: /belege/i })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: /tageskasse/i })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: /auswertung/i })).toBeInTheDocument();
@@ -33,14 +34,14 @@ describe("TillModule", () => {
   });
 
   it("switches to the Tageskasse tab and shows the cash counter", async () => {
-    render(<TillModule />);
+    render(<MemoryRouter><TillModule /></MemoryRouter>);
     await userEvent.click(screen.getByRole("tab", { name: /tageskasse/i }));
     expect(await screen.findByText(/gezählt \(ist\)/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /tagesabschluss speichern/i })).toBeInTheDocument();
   });
 
   it("switches to the Auswertung tab and shows the dashboard + export", async () => {
-    render(<TillModule />);
+    render(<MemoryRouter><TillModule /></MemoryRouter>);
     await userEvent.click(screen.getByRole("tab", { name: /auswertung/i }));
     expect(await screen.findByText(/Umsatz \(Summe\)/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /exportieren/i })).toBeInTheDocument();

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BelegeView } from "@/features/till/BelegeView";
 import { DailyCloseView } from "@/features/till/DailyCloseView";
 import { AuswertungView } from "@/features/till/AuswertungView";
+import { BackLink } from "@/components/BackLink";
 
 type Tab = "belege" | "tageskasse" | "auswertung";
 
@@ -16,6 +17,7 @@ export function TillModule() {
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-10">
+      <BackLink />
       <h1 className="mb-6 text-2xl font-bold text-foreground">Tageskasse &amp; Belege</h1>
       <div role="tablist" className="mb-6 flex gap-2 border-b border-border">
         {TABS.map((t) => (
