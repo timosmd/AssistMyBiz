@@ -100,6 +100,24 @@ pub fn run() {
             ",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 6,
+            description: "create_checklist_runs",
+            sql: "
+                CREATE TABLE checklist_runs (
+                  id INTEGER PRIMARY KEY,
+                  template_id INTEGER REFERENCES checklist_templates(id) ON DELETE SET NULL,
+                  periode TEXT NOT NULL,
+                  snapshot_json TEXT NOT NULL,
+                  item_states_json TEXT NOT NULL DEFAULT '{}',
+                  notiz TEXT,
+                  erstellt_am TEXT NOT NULL,
+                  abgeschlossen_am TEXT,
+                  UNIQUE(template_id, periode)
+                );
+            ",
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
