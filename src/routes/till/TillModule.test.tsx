@@ -13,6 +13,8 @@ vi.mock("@/lib/db/dailyClose", () => ({
   listDailyCloses: vi.fn(async () => []),
 }));
 vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn() }));
+vi.mock("@tauri-apps/api/event", () => ({ listen: vi.fn(async () => () => {}) }));
+vi.mock("qrcode", () => ({ default: { toDataURL: vi.fn(async () => "data:,") } }));
 vi.mock("@tauri-apps/plugin-dialog", () => ({ open: vi.fn() }));
 vi.mock("recharts", () => {
   const Pass = ({ children }: { children?: any }) => <div>{children}</div>;

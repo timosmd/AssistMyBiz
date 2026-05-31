@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ReceiptForm } from "@/features/receipts/ReceiptForm";
-import { ReceiptList } from "@/features/receipts/ReceiptList";
+import { BelegeView } from "@/features/till/BelegeView";
 import { DailyCloseView } from "@/features/till/DailyCloseView";
 import { AuswertungView } from "@/features/till/AuswertungView";
 
@@ -14,7 +13,6 @@ const TABS: { id: Tab; label: string }[] = [
 
 export function TillModule() {
   const [tab, setTab] = useState<Tab>("belege");
-  const [reloadKey, setReloadKey] = useState(0);
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-10">
@@ -31,12 +29,7 @@ export function TillModule() {
         ))}
       </div>
 
-      {tab === "belege" && (
-        <div className="space-y-6">
-          <ReceiptForm onSaved={() => setReloadKey((k) => k + 1)} />
-          <ReceiptList reloadKey={reloadKey} />
-        </div>
-      )}
+      {tab === "belege" && <BelegeView />}
       {tab === "tageskasse" && <DailyCloseView />}
       {tab === "auswertung" && <AuswertungView />}
     </main>

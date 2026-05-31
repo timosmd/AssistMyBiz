@@ -7,7 +7,7 @@ import { euroToCents } from "@/lib/money";
 
 interface ImportedFile { relative_path: string; file_kind: string; }
 
-export function ReceiptForm({ onSaved }: { onSaved: () => void }) {
+export function ReceiptForm({ onSaved, initialDatei }: { onSaved: () => void; initialDatei?: ImportedFile | null }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [betrag, setBetrag] = useState("");
   const [kategorieId, setKategorieId] = useState<number | null>(null);
@@ -23,6 +23,10 @@ export function ReceiptForm({ onSaved }: { onSaved: () => void }) {
       if (sonstiges) setKategorieId(sonstiges.id);
     });
   }, []);
+
+  useEffect(() => {
+    if (initialDatei) setDatei(initialDatei);
+  }, [initialDatei]);
 
   async function pickFile() {
     const path = await open({

@@ -42,4 +42,9 @@ describe("ReceiptForm", () => {
     expect(await screen.findByText(/speichern fehlgeschlagen/i)).toBeInTheDocument();
     expect(onSaved).not.toHaveBeenCalled();
   });
+
+  it("pre-fills the attached file from initialDatei", async () => {
+    render(<ReceiptForm onSaved={() => {}} initialDatei={{ relative_path: "scanned/x.jpg", file_kind: "jpg" }} />);
+    expect(await screen.findByRole("button", { name: /beleg: jpg/i })).toBeInTheDocument();
+  });
 });
