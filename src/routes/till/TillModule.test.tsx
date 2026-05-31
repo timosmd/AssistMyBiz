@@ -10,7 +10,14 @@ vi.mock("@/lib/db/categories", () => ({ listCategories: vi.fn(async () => []) })
 vi.mock("@/lib/db/dailyClose", () => ({
   getDailyClose: vi.fn(async () => null),
   saveDailyClose: vi.fn(async () => {}),
+  listDailyCloses: vi.fn(async () => []),
 }));
+vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn() }));
+vi.mock("@tauri-apps/plugin-dialog", () => ({ open: vi.fn() }));
+vi.mock("recharts", () => {
+  const Pass = ({ children }: { children?: any }) => <div>{children}</div>;
+  return { ResponsiveContainer: Pass, BarChart: Pass, Bar: () => null, XAxis: () => null, YAxis: () => null, Tooltip: () => null, CartesianGrid: () => null };
+});
 
 import { TillModule } from "./TillModule";
 
@@ -28,5 +35,12 @@ describe("TillModule", () => {
     await userEvent.click(screen.getByRole("tab", { name: /tageskasse/i }));
     expect(await screen.findByText(/gezählt \(ist\)/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /tagesabschluss speichern/i })).toBeInTheDocument();
+  });
+
+  it("switches to the Auswertung tab and shows the dashboard + export", async () => {
+    render(<TillModule />);
+    await userEvent.click(screen.getByRole("tab", { name: /auswertung/i }));
+    expect(await screen.findByText(/Umsatz \(Summe\)/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /exportieren/i })).toBeInTheDocument();
   });
 });

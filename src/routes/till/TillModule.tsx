@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ReceiptForm } from "@/features/receipts/ReceiptForm";
 import { ReceiptList } from "@/features/receipts/ReceiptList";
 import { DailyCloseView } from "@/features/till/DailyCloseView";
+import { AuswertungView } from "@/features/till/AuswertungView";
 
 type Tab = "belege" | "tageskasse" | "auswertung";
 
@@ -37,7 +38,7 @@ export function TillModule() {
         </div>
       )}
       {tab === "tageskasse" && <DailyCloseView />}
-      {tab === "auswertung" && <p className="text-muted-foreground">Auswertung — bald verfügbar.</p>}
+      {tab === "auswertung" && <AuswertungView />}
     </main>
   );
 }
