@@ -82,6 +82,24 @@ pub fn run() {
             ",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 5,
+            description: "create_checklist_templates",
+            sql: "
+                CREATE TABLE checklist_templates (
+                  id INTEGER PRIMARY KEY,
+                  name TEXT NOT NULL,
+                  frequenz TEXT NOT NULL DEFAULT 'taeglich',
+                  items_json TEXT NOT NULL DEFAULT '[]',
+                  erstellt_am TEXT NOT NULL
+                );
+                INSERT INTO checklist_templates (name, frequenz, items_json, erstellt_am) VALUES
+                  ('Öffnen', 'taeglich', '[{\"id\":\"o1\",\"label\":\"Kasse hochfahren\"},{\"id\":\"o2\",\"label\":\"Licht & Schild einschalten\"},{\"id\":\"o3\",\"label\":\"Eingang aufsperren\"}]', '2026-05-31T00:00:00Z'),
+                  ('Schließen', 'taeglich', '[{\"id\":\"s1\",\"label\":\"Kasse zählen & abschließen\"},{\"id\":\"s2\",\"label\":\"Licht ausschalten\"},{\"id\":\"s3\",\"label\":\"Türen & Fenster prüfen\"},{\"id\":\"s4\",\"label\":\"Alarm aktivieren\"}]', '2026-05-31T00:00:00Z'),
+                  ('Wöchentlich', 'woechentlich', '[{\"id\":\"w1\",\"label\":\"Lager auf Mindestbestände prüfen\"},{\"id\":\"w2\",\"label\":\"Kühlung/Geräte reinigen\"},{\"id\":\"w3\",\"label\":\"Müll rausbringen\"}]', '2026-05-31T00:00:00Z');
+            ",
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
