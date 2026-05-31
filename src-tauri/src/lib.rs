@@ -66,6 +66,22 @@ pub fn run() {
             ",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 4,
+            description: "create_articles",
+            sql: "
+                CREATE TABLE articles (
+                  id INTEGER PRIMARY KEY,
+                  name TEXT NOT NULL,
+                  bestand INTEGER NOT NULL DEFAULT 0,
+                  mindestbestand INTEGER NOT NULL DEFAULT 0,
+                  einheit TEXT,
+                  lieferant TEXT,
+                  erstellt_am TEXT NOT NULL
+                );
+            ",
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
