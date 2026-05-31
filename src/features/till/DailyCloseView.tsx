@@ -47,6 +47,7 @@ export function DailyCloseView() {
 
   return (
     <div className="space-y-6">
+      <p className="text-sm text-muted-foreground">Zähle dein Bargeld (Ist), trage den erwarteten Stand (Soll) und den Tagesumsatz ein — die Kassendifferenz wird berechnet.</p>
       <div className="flex flex-wrap items-end gap-4">
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">Datum</span>
@@ -64,11 +65,13 @@ export function DailyCloseView() {
           <span className="text-sm font-medium">Soll (€)</span>
           <input aria-label="Soll" value={soll} onChange={(e) => { setSoll(e.target.value); setGespeichert(false); }}
             inputMode="decimal" placeholder="0,00" className="rounded-xl border border-border px-3 py-2" />
+          <span className="text-xs text-muted-foreground">Erwarteter Kassenstand</span>
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">Tagesumsatz (€)</span>
           <input aria-label="Tagesumsatz" value={umsatz} onChange={(e) => { setUmsatz(e.target.value); setGespeichert(false); }}
             inputMode="decimal" placeholder="0,00" className="rounded-xl border border-border px-3 py-2" />
+          <span className="text-xs text-muted-foreground">Summe der Tageseinnahmen — manuell eintragen</span>
         </label>
         <label className="flex flex-col gap-1 sm:col-span-2">
           <span className="text-sm font-medium">Notiz</span>
