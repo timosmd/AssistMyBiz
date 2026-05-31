@@ -39,12 +39,17 @@ describe("BugReportModal", () => {
     expect(arg.prio).toBe("Mittel");
   });
 
-  it("shows a confirmation after a successful send", async () => {
+  it("closes itself after a successful send", async () => {
     reportSink.mockResolvedValue(undefined);
-    renderModal();
+    const onClose = vi.fn();
+    render(
+      <MemoryRouter initialEntries={["/till"]}>
+        <BugReportModal onClose={onClose} />
+      </MemoryRouter>,
+    );
     await userEvent.type(screen.getByLabelText(/beschreibung/i), "Test");
     await userEvent.click(screen.getByRole("button", { name: /senden/i }));
-    expect(await screen.findByText(/report wurde gespeichert/i)).toBeInTheDocument();
+    await vi.waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
   });
 
   it("shows an error when the sink rejects", async () => {

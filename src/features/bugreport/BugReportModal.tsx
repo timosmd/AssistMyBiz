@@ -12,7 +12,6 @@ export function BugReportModal({ onClose }: { onClose: () => void }) {
   const [beschreibung, setBeschreibung] = useState("");
   const [prio, setPrio] = useState<Priority>("Mittel");
   const [fehler, setFehler] = useState<string | null>(null);
-  const [gesendet, setGesendet] = useState(false);
 
   async function send() {
     if (beschreibung.trim() === "") {
@@ -31,7 +30,7 @@ export function BugReportModal({ onClose }: { onClose: () => void }) {
         beschreibung: beschreibung.trim(),
         log: getLog(),
       });
-      setGesendet(true);
+      onClose();
     } catch {
       setFehler("Konnte den Report nicht speichern.");
     }
@@ -42,16 +41,7 @@ export function BugReportModal({ onClose }: { onClose: () => void }) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="w-full max-w-md space-y-4 rounded-2xl bg-card p-6 shadow-xl">
         <h2 className="text-lg font-semibold">Bug melden</h2>
-        {gesendet ? (
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Danke! Der Report wurde gespeichert.</p>
-            <button type="button" onClick={onClose}
-              className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
-              Schließen
-            </button>
-          </div>
-        ) : (
-          <>
+        <>
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium">Beschreibung</span>
               <textarea aria-label="Beschreibung" value={beschreibung}
@@ -76,7 +66,6 @@ export function BugReportModal({ onClose }: { onClose: () => void }) {
               </button>
             </div>
           </>
-        )}
       </div>
     </div>
   );
