@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { CashCounter } from "./CashCounter";
+import { DailyCloseHistory } from "./DailyCloseHistory";
 import { difference } from "./denominations";
 import { getDailyClose, saveDailyClose } from "@/lib/db/dailyClose";
 import { euroToCents, formatEuro } from "@/lib/money";
@@ -12,6 +13,7 @@ export function DailyCloseView() {
   const [notiz, setNotiz] = useState("");
   const [fehler, setFehler] = useState<string | null>(null);
   const [gespeichert, setGespeichert] = useState(false);
+  const [historyKey, setHistoryKey] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -40,6 +42,7 @@ export function DailyCloseView() {
         notiz: notiz.trim() || null,
       });
       setGespeichert(true);
+      setHistoryKey((k) => k + 1);
     } catch {
       setFehler("Tagesabschluss konnte nicht gespeichert werden.");
     }
@@ -92,6 +95,8 @@ export function DailyCloseView() {
         className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
         Tagesabschluss speichern
       </button>
+
+      <DailyCloseHistory reloadKey={historyKey} onEdit={(d) => { setDatum(d); setGespeichert(false); }} />
     </div>
   );
 }

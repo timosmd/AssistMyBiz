@@ -47,6 +47,11 @@ export async function listDailyCloses(): Promise<DailyClose[]> {
   }));
 }
 
+export async function deleteDailyClose(datum: string): Promise<void> {
+  const db = await getDb();
+  await db.execute("DELETE FROM daily_close WHERE datum = $1", [datum]);
+}
+
 export async function saveDailyClose(c: DailyClose): Promise<void> {
   const db = await getDb();
   await db.execute(

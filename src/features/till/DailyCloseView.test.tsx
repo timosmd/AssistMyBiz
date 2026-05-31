@@ -6,6 +6,8 @@ const saveDailyClose = vi.fn();
 vi.mock("@/lib/db/dailyClose", () => ({
   getDailyClose: vi.fn(async () => null),
   saveDailyClose: (...a: unknown[]) => saveDailyClose(...a),
+  listDailyCloses: vi.fn(async () => []),
+  deleteDailyClose: vi.fn(async () => {}),
 }));
 
 import { DailyCloseView } from "./DailyCloseView";

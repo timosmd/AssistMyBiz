@@ -56,3 +56,14 @@ describe("listDailyCloses", () => {
     expect(sql).toMatch(/ORDER BY datum/i);
   });
 });
+
+describe("deleteDailyClose", () => {
+  it("deletes by datum", async () => {
+    execute.mockResolvedValue(undefined);
+    const { deleteDailyClose } = await import("./dailyClose");
+    await deleteDailyClose("2026-05-31");
+    const [sql, params] = execute.mock.calls[0];
+    expect(sql).toMatch(/DELETE FROM daily_close WHERE datum = \$1/i);
+    expect(params).toEqual(["2026-05-31"]);
+  });
+});
