@@ -1,6 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use tauri_plugin_sql::{Migration, MigrationKind};
 
+mod bugreport;
 mod receipts;
 
 #[tauri::command]
@@ -60,7 +61,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             greet,
             receipts::import_receipt_file,
-            receipts::read_receipt_file
+            receipts::read_receipt_file,
+            bugreport::write_bug_report
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
