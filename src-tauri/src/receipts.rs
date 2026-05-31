@@ -1,5 +1,6 @@
 use std::path::{Path, PathBuf};
 use tauri::Manager;
+use tauri_plugin_opener::OpenerExt;
 
 /// Erlaubte Dateiendung -> normalisierter Typ. None = nicht erlaubt.
 pub fn file_kind(src: &str) -> Option<&'static str> {
@@ -48,6 +49,17 @@ pub fn import_receipt_file(app: tauri::AppHandle, src_path: String, year: String
 pub fn read_receipt_file(app: tauri::AppHandle, relative_path: String) -> Result<Vec<u8>, String> {
     let path = app.path().app_data_dir().map_err(|e| e.to_string())?.join("receipts").join(&relative_path);
     std::fs::read(&path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn open_receipt_file(app: tauri::AppHandle, relative_path: String) -> Result<(), String> {
+    if !crate::export::is_safe_relative(&relative_path) {
+        return Err("Unzulässiger Pfad".to_string());
+    }
+    let path = app.path().app_data_dir().map_err(|e| e.to_string())?.join("receipts").join(&relative_path);
+    app.opener()
+        .open_path(path.to_string_lossy().to_string(), None::<&str>)
+        .map_err(|e| e.to_string())
 }
 
 #[cfg(test)]

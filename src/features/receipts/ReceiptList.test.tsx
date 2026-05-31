@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import type { Receipt } from "@/lib/db/receipts";
 
 const sample: Receipt[] = [
-  { id: 1, datum: "2026-05-31", betragCent: 1000, kategorieId: 1, kategorieName: "Wareneinkauf", notiz: "Bäcker", dateiPfad: null, dateiTyp: null },
+  { id: 1, datum: "2026-05-31", betragCent: 1000, kategorieId: 1, kategorieName: "Wareneinkauf", notiz: "Bäcker", dateiPfad: "2026/a.jpg", dateiTyp: "jpg" },
   { id: 2, datum: "2026-05-30", betragCent: 2000, kategorieId: 2, kategorieName: "Miete", notiz: "Mai", dateiPfad: null, dateiTyp: null },
 ];
 vi.mock("@/lib/db/receipts", () => ({
@@ -17,9 +17,11 @@ vi.mock("@/lib/db/categories", () => ({
     { id: 2, name: "Miete", isDefault: true, sortOrder: 2 },
   ]),
 }));
+vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn(() => Promise.resolve()) }));
 
 import { ReceiptList } from "./ReceiptList";
 import { deleteReceipt } from "@/lib/db/receipts";
+import { invoke } from "@tauri-apps/api/core";
 
 describe("ReceiptList", () => {
   it("renders all receipts and filters by search text", async () => {
@@ -36,5 +38,12 @@ describe("ReceiptList", () => {
     await screen.findByText("Bäcker");
     await userEvent.click(screen.getByRole("button", { name: /Beleg 1 löschen/i }));
     expect(vi.mocked(deleteReceipt)).toHaveBeenCalledWith(1);
+  });
+
+  it("opens a receipt file via the open button", async () => {
+    render(<ReceiptList reloadKey={0} />);
+    await screen.findByText("Bäcker");
+    await userEvent.click(screen.getByRole("button", { name: /Beleg 1 öffnen/i }));
+    expect(vi.mocked(invoke)).toHaveBeenCalledWith("open_receipt_file", { relativePath: "2026/a.jpg" });
   });
 });

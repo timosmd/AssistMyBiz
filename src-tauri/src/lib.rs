@@ -81,6 +81,7 @@ pub fn run() {
             greet,
             receipts::import_receipt_file,
             receipts::read_receipt_file,
+            receipts::open_receipt_file,
             bugreport::write_bug_report,
             export::export_bookkeeping,
             scanner::start_scan_session,

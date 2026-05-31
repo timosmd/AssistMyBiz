@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import { listReceipts, deleteReceipt, type Receipt } from "@/lib/db/receipts";
 import { listCategories, type Category } from "@/lib/db/categories";
 import { filterReceipts } from "./filter";
@@ -27,6 +28,15 @@ export function ReceiptList({ reloadKey }: { reloadKey: number }) {
     }
   }
 
+  async function openFile(r: Receipt) {
+    try {
+      await invoke("open_receipt_file", { relativePath: r.dateiPfad });
+      setFehler(null);
+    } catch {
+      setFehler("Datei konnte nicht geöffnet werden.");
+    }
+  }
+
   const shown = filterReceipts(receipts, query, categoryId);
 
   return (
@@ -47,7 +57,7 @@ export function ReceiptList({ reloadKey }: { reloadKey: number }) {
         <p className="text-muted-foreground">Noch keine Belege.</p>
       ) : (
         <div className="space-y-2">
-          {shown.map((r) => <ReceiptCard key={r.id} receipt={r} onDelete={remove} />)}
+          {shown.map((r) => <ReceiptCard key={r.id} receipt={r} onDelete={remove} onOpen={openFile} />)}
         </div>
       )}
     </div>
