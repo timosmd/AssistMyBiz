@@ -118,6 +118,40 @@ pub fn run() {
             ",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 7,
+            description: "create_shifts_employees_presets",
+            sql: "
+                CREATE TABLE employees (
+                  id INTEGER PRIMARY KEY,
+                  name TEXT NOT NULL,
+                  wochenstunden REAL NOT NULL DEFAULT 0,
+                  farbe TEXT,
+                  aktiv INTEGER NOT NULL DEFAULT 1,
+                  erstellt_am TEXT NOT NULL
+                );
+                CREATE TABLE shift_presets (
+                  id INTEGER PRIMARY KEY,
+                  name TEXT NOT NULL,
+                  start TEXT NOT NULL,
+                  ende TEXT NOT NULL,
+                  erstellt_am TEXT NOT NULL
+                );
+                INSERT INTO shift_presets (name, start, ende, erstellt_am) VALUES
+                  ('Früh', '08:00', '14:00', '2026-06-01T00:00:00Z'),
+                  ('Spät', '14:00', '20:00', '2026-06-01T00:00:00Z');
+                CREATE TABLE shifts (
+                  id INTEGER PRIMARY KEY,
+                  employee_id INTEGER NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+                  datum TEXT NOT NULL,
+                  start TEXT NOT NULL,
+                  ende TEXT NOT NULL,
+                  erstellt_am TEXT NOT NULL
+                );
+                CREATE INDEX idx_shifts_datum ON shifts(datum);
+            ",
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
